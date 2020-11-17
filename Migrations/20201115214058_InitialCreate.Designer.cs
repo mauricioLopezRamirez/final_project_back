@@ -9,7 +9,7 @@ using net_api_swagger.Infrastructure;
 namespace net_api_swagger.Migrations
 {
     [DbContext(typeof(libraryDbContext))]
-    [Migration("20201113033615_InitialCreate")]
+    [Migration("20201115214058_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,8 +55,13 @@ namespace net_api_swagger.Migrations
                         .HasColumnType("varbinary(16)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(20)")
                         .HasMaxLength(20);
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasMaxLength(4);
 
                     b.HasKey("Id");
 

@@ -53,6 +53,13 @@ namespace net_api_swagger
                 c.RoutePrefix = "";
             });
 
+            app.UseCors(
+             options => options.WithOrigins("*")
+             .AllowAnyOrigin()
+             .AllowAnyMethod()
+             .AllowAnyHeader()  
+            );
+
             app.UseRouting();
 
             app.UseAuthorization();

@@ -26,6 +26,12 @@ namespace net_api_swagger.Controllers
         {
             return await _dbContext.Genres.AsNoTracking().ToListAsync();
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetForId(Guid id)
+        {
+            var genre = await _dbContext.Genres.FindAsync(id);
+            return StatusCode(200, genre);
+        }
         [HttpPost]
         public async Task<ActionResult<Genre>> CreateGenre(
             [FromBody] Genre genre
@@ -35,5 +41,52 @@ namespace net_api_swagger.Controllers
             await _dbContext.SaveChangesAsync();
             return StatusCode(201, genre);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateGenre(Guid id, Genre genre)
+        {
+            if (id != genre.Id)
+            {
+                return BadRequest();
+            }
+
+            var todoItem = await _dbContext.Genres.FindAsync(id);
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+
+            todoItem.Name = genre.Name;
+            todoItem.Description = genre.Description;
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGenre(Guid id)
+        {
+            var todoItem = await _dbContext.Genres.FindAsync(id);
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Genres.Remove(todoItem);
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool TodoItemExists(Guid id) =>
+        _dbContext.Genres.Any(g => g.Id == id);
     }
 }

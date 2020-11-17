@@ -18,7 +18,11 @@ namespace net_api_swagger.Infrastructure.EntityConfigurations
           bookConfiguration.HasKey(b => b.Id);
           bookConfiguration.Property(b => b.Name)
           .HasMaxLength(20)
-          .IsRequired(false);
+          .IsRequired(true);
+          
+          bookConfiguration.Property(b => b.Year)
+          .HasMaxLength(4)
+          .IsRequired(true);
           
           bookConfiguration.Property<Guid>("AuthorId")
           .UsePropertyAccessMode(PropertyAccessMode.Field)

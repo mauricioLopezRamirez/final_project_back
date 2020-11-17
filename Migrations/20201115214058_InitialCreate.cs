@@ -38,7 +38,8 @@ namespace net_api_swagger.Migrations
                 columns: table => new
                 {
                     Id = table.Column<byte[]>(nullable: false),
-                    Name = table.Column<string>(maxLength: 20, nullable: true),
+                    Name = table.Column<string>(maxLength: 20, nullable: false),
+                    Year = table.Column<int>(maxLength: 4, nullable: false),
                     AuthorId = table.Column<byte[]>(nullable: false),
                     GenreId = table.Column<byte[]>(nullable: false)
                 },

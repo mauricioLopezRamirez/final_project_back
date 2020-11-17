@@ -53,8 +53,13 @@ namespace net_api_swagger.Migrations
                         .HasColumnType("varbinary(16)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(20)")
                         .HasMaxLength(20);
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasMaxLength(4);
 
                     b.HasKey("Id");
 

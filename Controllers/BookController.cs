@@ -25,6 +25,12 @@ namespace net_api_swagger.Controllers
         {
             return await _dbContext.Books.AsNoTracking().ToListAsync();
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetForId(Guid id)
+        {
+            var book = await _dbContext.Books.FindAsync(id);
+            return StatusCode(200, book);
+        }
         [HttpPost]
         public async Task<ActionResult<Author>> CreateAuthor(
             [FromBody] Book book
@@ -34,5 +40,54 @@ namespace net_api_swagger.Controllers
             await _dbContext.SaveChangesAsync();
             return StatusCode(201, book);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBook(Guid id, Book book)
+        {
+            if (id != book.Id)
+            {
+                return BadRequest();
+            }
+
+            var todoItem = await _dbContext.Books.FindAsync(id);
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+
+            todoItem.Name = book.Name;
+            todoItem.Year = book.Year;
+            todoItem.AuthorId = book.AuthorId;
+            todoItem.GenreId = book.GenreId;
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(Guid id)
+        {
+            var todoItem = await _dbContext.Books.FindAsync(id);
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Books.Remove(todoItem);
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool TodoItemExists(Guid id) =>
+        _dbContext.Books.Any(b => b.Id == id);
     }
 }
